@@ -3,18 +3,14 @@ import { Grid, SxProps, Theme } from '@mui/material';
 import { isArray, isObject } from '../utils';
 
 type Props = {
-	obj?: Object;
+	obj?: any;
 	sx?: SxProps<Theme>;
-	keySx?: SxProps<Theme>;
 	hideKeys?: boolean;
 };
 
-export const DeepListObject = ({
-	obj,
-	sx,
-	keySx,
-	hideKeys = isArray(obj),
-}: Props) => {
+export const DeepListObject = ({ obj, sx, hideKeys = isArray(obj) }: Props) => {
+	if (typeof obj !== 'object') return obj;
+
 	return (
 		<Grid
 			container
@@ -28,7 +24,7 @@ export const DeepListObject = ({
 		>
 			{obj &&
 				Object.entries(obj).map(([label, element], i) => (
-					<React.Fragment key={`deep-list-object--key-pair-value-${i}`}>
+					<React.Fragment key={`deep-list-object--key-value-pair-${i}`}>
 						{!hideKeys && (
 							<Grid
 								item
@@ -37,25 +33,16 @@ export const DeepListObject = ({
 									fontWeight: 300,
 									overflowWrap: 'normal',
 									display: 'flex',
-									alignItems:
-										!isValidElement(element) ||
-										typeof element.type === 'string' ||
-										element.type.name === (<DeepListObject />).type.name
-											? 'flex-start'
-											: 'center',
-									...keySx,
 								}}
 							>
-								{
-									label.match(/^[A-Z][A-Za-z]*$|\s/) // if it matches this, then it is not camelCase. return value as-is
-										? label
-										: label
-												.match(
-													/[A-Z]?[a-z]+|[A-Z]+(?!=[A-Z]|[a-z])|[^A-Za-z]+/g, // parse object key into word/acronym groupings
-												)
-												?.join(' ')
-												.replace(/^[a-z]/, (match) => match.toUpperCase()) // capitalize first letter
-								}
+								{label
+									.match(
+										/[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]+|[^A-Za-z]|$)|[^A-Za-z\s_-]+/g, // parse object key into words|acronyms|other groupings
+									)
+									?.join(' ')
+									.replaceAll(/(?:^|\s)([a-z])/g, (match) => {
+										return match.toUpperCase();
+									})}
 							</Grid>
 						)}
 						<Grid
@@ -63,22 +50,26 @@ export const DeepListObject = ({
 							className={`deep-list-object-value`}
 							sx={{
 								fontWeight: 800,
+								overflowWrap: 'anywhere',
 								display: 'flex',
 								flexDirection: 'column',
 								alignItems: 'flex-start',
-								overflowWrap: 'anywhere',
 							}}
 						>
 							{isValidElement(element) ? (
 								element
 							) : isObject(element) || isArray(element) ? (
 								<>
-									<span>{`{`}</span>
+									<span style={{ fontWeight: 300 }}>
+										{isArray(element) ? `[` : `{`}
+									</span>
 									<DeepListObject
 										obj={element}
 										sx={{ paddingLeft: '1.5rem' }}
 									/>
-									<span>{`}`}</span>
+									<span style={{ fontWeight: 300 }}>
+										{isArray(element) ? `]` : `}`}
+									</span>
 								</>
 							) : (
 								element?.toString() ?? ''

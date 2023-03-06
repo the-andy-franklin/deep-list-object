@@ -12,12 +12,15 @@ function App() {
 					city: 'San Francisco',
 					state: 'California',
 					addressLine2: {
-						apt: '23',
+						apt: '420',
 					},
 				},
-				thisIsAnSQLQuery: 'Select * from table',
+				'this-is-a-string-key': 12,
+				this_IsAnSQLQuery: 'Select * from acronyms;',
 				'time@createdAt': '12:00:00',
-				'12:00:00': 'time created',
+				friends: ['alice', 'billy', 'charlie', ['david', 'emily', 'frank']],
+				JSX_Element: <div>hello, world</div>,
+				'p TAG': <p style={{ color: 'green', margin: 0 }}>green</p>,
 			}}
 		/>
 	);

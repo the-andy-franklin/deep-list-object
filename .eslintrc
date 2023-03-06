@@ -1,0 +1,21 @@
+{
+	"env": {
+		"browser": true
+	},
+	"extends": ["eslint:recommended"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"plugins": ["react", "@typescript-eslint", "prettier", "unused-imports"],
+	"ignorePatterns": ["node_modules", "package*.json"],
+	"rules": {
+		"prettier/prettier": "warn",
+		"no-unused-vars": "warn",
+		"unused-imports/no-unused-imports": "warn"
+	}
+}
